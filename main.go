@@ -1,10 +1,21 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 )
+
+type Page struct {
+	Title string
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[1:]
+	page := &Page{Title: title}
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, page)
+}
 
 func main() {
 	http.HandleFunc("/", handler)
@@ -15,8 +26,4 @@ func main() {
 	}
 
 	http.ListenAndServe(":"+port, nil)
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello Heroku!")
 }
