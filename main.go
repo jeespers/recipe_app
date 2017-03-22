@@ -1,11 +1,17 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
+// Page struct for handling html page content
 type Page struct {
 	Title string
 }
@@ -25,5 +31,11 @@ func main() {
 		port = "8080"
 	}
 
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%T", db)
 	http.ListenAndServe(":"+port, nil)
 }
